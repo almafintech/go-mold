@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"flag"
 	"fmt"
 	"os"
@@ -16,6 +17,20 @@ import (
 var log = logging.MustGetLogger("mold-client")
 
 var opt MoldUDP.Option
+
+var coder = binary.BigEndian
+
+type contents struct {
+	trackingN uint16
+	timeStamp uint64
+	stock string
+	secClass string
+	bidPrice uint32
+	bidSize uint32
+	askPrice uint32
+	askSize uint32
+}
+
 
 func main() {
 	var maddr string
@@ -96,6 +111,35 @@ func main() {
 					lTic = *lastTic
 				} else {
 					log.Errorf("last %d /%d Data is null", n, cc.SeqNo())
+				}
+			}
+
+			var j int
+			for j = 0; j < len(mess); j++ {
+				msg := mess[j]
+				msgType := msg.Data[0:1]
+				if string(msgType) == "Q" {
+					if len(msg.Data) != 34 {
+						log.Fatal("Wrong message length!")
+					}
+
+					var timestamp uint64
+					factor := 1
+					for k := 8; k >= 3; k-- {
+						timestamp = uint64(int(msg.Data[k])*factor)
+						factor *= 256
+					}
+					cnts := contents{
+						trackingN : coder.Uint16(msg.Data[1:3]),
+						timeStamp : timestamp,
+						stock : string(msg.Data[9:17]),
+						secClass : string(msg.Data[17:18]),
+						bidPrice : coder.Uint32(msg.Data[18:22]),
+						bidSize : coder.Uint32(msg.Data[22:26]),
+						askPrice : coder.Uint32(msg.Data[26:30]),
+						askSize : coder.Uint32(msg.Data[30:34]),
+					}
+					log.Infof("  Message: %d \n    Contents: %+v \n ", j, cnts)
 				}
 			}
 		}
