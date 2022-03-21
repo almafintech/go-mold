@@ -82,7 +82,7 @@ func main() {
 		}
 	}()
 
-	//cc.Running = true
+	cc.Running = true
 	lastSeq := uint64(0)
 	go func() {
 		for cc.Running {
