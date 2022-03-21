@@ -182,6 +182,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 	seqNo := msgBB.seqNo
 	log.Infof("Before msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
 	if msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff {
+		log.Infof("Inside msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
 		// should request for retransmit
 		if len(res) != int(msgCnt) {
 			c.nError++
@@ -202,6 +203,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 			c.nMissed++
 			return reqBuf, nil
 		}
+		log.Infof("About to leave", len(res))
 	} else {
 		// endSession
 		// or heartbeat
