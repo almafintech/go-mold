@@ -240,8 +240,10 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 
 	c.readLock.Lock()
 	if c.ready == nil {
+		log.Infof("Inserting %d messages", len(res))
 		c.ready = res
 	} else {
+		log.Infof("Appending %d messages", len(res))
 		c.ready = append(c.ready, res...)
 	}
 	c.readLock.Unlock()
