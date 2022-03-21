@@ -180,6 +180,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 		}
 	}
 	seqNo := msgBB.seqNo
+	log.Infof("msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
 	if msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff {
 		// should request for retransmit
 		if len(res) != int(msgCnt) {
@@ -227,6 +228,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 	atomic.StoreUint64(&c.lastSeq, c.seqNo)
 	atomic.StoreInt32(&c.lastN, int32(seqNo-c.seqNo))
 	c.seqNo = seqNo
+	log.Infof("Before c.endSession && seqNo %d messages", len(res))
 	if c.endSession && seqNo >= c.seqMax {
 		if c.seqEnd > seqNo {
 			c.seqMax = c.seqEnd
@@ -237,7 +239,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 			c.bDone = true
 		}
 	}
-
+	log.Infof("About to enter lock %d messages", len(res))
 	c.readLock.Lock()
 	if c.ready == nil {
 		log.Infof("Inserting %d messages", len(res))
