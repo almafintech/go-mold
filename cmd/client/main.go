@@ -87,6 +87,7 @@ func main() {
 	go func() {
 		for cc.Running {
 			mess, lastS, err := cc.Read()
+			log.Infof("Got %d messages", len(mess))
 			if err != nil {
 				log.Error("Client Read", err)
 				continue
