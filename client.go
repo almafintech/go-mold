@@ -280,6 +280,7 @@ func (c *Client) newReq(seqNo uint64) []byte {
 //	return   	nil,nil   for end of session or finished
 func (c *Client) Read() ([]Message, uint64, error) {
 	for c.Running {
+		log.Infof("Reading")
 		c.readLock.Lock()
 		res := c.ready
 		c.ready = nil
