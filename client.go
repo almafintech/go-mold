@@ -236,6 +236,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 			c.bDone = true
 		}
 	}
+	log.Infof("Got %d messages", len(res))
 	c.readLock.Lock()
 	if c.ready == nil {
 		c.ready = res
