@@ -156,7 +156,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 			res = ret
 		}
 	}
-	log.Infof("Got %d messages", len(res))
+	log.Infof("Do %d messages", len(res))
 	if msgBB.msgCnt == 0xffff {
 		if !c.endSession {
 			log.Info("Got endSession packet")
@@ -386,6 +386,7 @@ func (c *Client) requestLoop() {
 				}
 			*/
 		case msgBB, ok := <-c.ch:
+			log.Infof("about to doMsgBuf %d bytes", len(msgBB.dataBuf))
 			if ok {
 				if req, err := c.doMsgBuf(&msgBB); err != nil {
 					if c.lastLogTime < time.Now().Unix() {
