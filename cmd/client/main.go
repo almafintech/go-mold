@@ -77,7 +77,7 @@ func main() {
 				cc.Running = false
 				ExitFunc()
 			default:
-				log.Info("Got signal", s)
+				//log.Info("Got signal", s)
 			}
 		}
 	}()
