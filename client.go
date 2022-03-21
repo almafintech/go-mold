@@ -156,6 +156,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 			res = ret
 		}
 	}
+	log.Infof("Got %d messages", len(res))
 	if msgBB.msgCnt == 0xffff {
 		if !c.endSession {
 			log.Info("Got endSession packet")
@@ -236,7 +237,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 			c.bDone = true
 		}
 	}
-	log.Infof("Got %d messages", len(res))
+
 	c.readLock.Lock()
 	if c.ready == nil {
 		c.ready = res
