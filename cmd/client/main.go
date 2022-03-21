@@ -86,6 +86,7 @@ func main() {
 	lastSeq := uint64(0)
 	go func() {
 		for cc.Running {
+			log.Infof("About to read")
 			mess, lastS, err := cc.Read()
 			log.Infof("Got %d messages", len(mess))
 			if err != nil {
