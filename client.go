@@ -180,7 +180,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 		}
 	}
 	seqNo := msgBB.seqNo
-	log.Infof("msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
+	log.Infof("Before msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
 	if msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff {
 		// should request for retransmit
 		if len(res) != int(msgCnt) {
@@ -213,6 +213,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 		}
 		return nil, nil
 	}
+	log.Infof("After msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
 	seqNo = msgBB.seqNo
 	if c.seqNo > seqNo {
 		res = res[int(c.seqNo-seqNo):]
@@ -225,6 +226,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 		res = append(res, bb...)
 		seqNo += uint64(len(bb))
 	}
+	log.Infof("Before atomic.StoreUint64(&c.lastSeq, c.seqNo %d messages", len(res))
 	atomic.StoreUint64(&c.lastSeq, c.seqNo)
 	atomic.StoreInt32(&c.lastN, int32(seqNo-c.seqNo))
 	c.seqNo = seqNo
