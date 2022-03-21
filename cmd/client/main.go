@@ -30,6 +30,9 @@ func main() {
 	flag.IntVar(&port, "p", 5858, "UDP port to listen")
 	flag.IntVar(&waits, "w", 30, "seconds wait for UDP packet, 0 unlimited")
 	flag.StringVar(&netMode, "net", "net", "Multicast Recv network interface, net/sock/zsock")
+	var reqServ string
+	flag.StringVar(&reqServ, "req", "", "Multicast Req address:port")
+	opt.Srvs = []string{reqServ}
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: client [options]\n")
 		flag.PrintDefaults()

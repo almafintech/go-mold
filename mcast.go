@@ -2,6 +2,7 @@ package MoldUDP
 
 import (
 	"errors"
+	"fmt"
 	"net"
 )
 
@@ -81,30 +82,50 @@ func (c *netIf) Close() error {
 	return err
 }
 
+const maxDatagramSize = 8192
+
 func (c *netIf) Open(ip net.IP, port int, ifn *net.Interface) (err error) {
 	if c.conn != nil {
 		return errOpened
 	}
-	var fd int = -1
-	laddr := net.UDPAddr{IP: net.IPv4(0, 0, 0, 0), Port: port}
-	c.conn, err = net.ListenUDP("udp4", &laddr)
+	// Parse the string address
+	addr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d",ip.String(), port)
 	if err != nil {
 		return err
 	}
+
+	// Open up a connection
+	c.conn, err = net.ListenMulticastUDP("udp4", nil, addr)
+	if err != nil {
+		return err
+	}
+
+	c.conn.SetReadBuffer(maxDatagramSize)
+
 	c.bRead = true
 	c.adr.IP = ip
 	c.adr.Port = port
-	if ff, err := c.conn.File(); err == nil {
-		fd = int(ff.Fd())
-	} else {
-		log.Error("Get UDPConn fd", err)
-	}
-	if fd >= 0 {
-		ReserveRecvBuf(fd)
-	}
-	if err := JoinMulticast(fd, ip.To4(), ifn); err != nil {
-		log.Info("add multicast group", err)
-	}
+
+	//var fd int = -1
+	//laddr := net.UDPAddr{IP: net.IPv4(0, 0, 0, 0), Port: port}
+	//c.conn, err = net.ListenUDP("udp4", &laddr)
+	//if err != nil {
+	//	return err
+	//}
+	//c.bRead = true
+	//c.adr.IP = ip
+	//c.adr.Port = port
+	//if ff, err := c.conn.File(); err == nil {
+	//	fd = int(ff.Fd())
+	//} else {
+	//	log.Error("Get UDPConn fd", err)
+	//}
+	//if fd >= 0 {
+	//	ReserveRecvBuf(fd)
+	//}
+	//if err := JoinMulticast(fd, ip.To4(), ifn); err != nil {
+	//	log.Info("add multicast group", err)
+	//}
 	return nil
 }
 
