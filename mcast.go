@@ -89,7 +89,7 @@ func (c *netIf) Open(ip net.IP, port int, ifn *net.Interface) (err error) {
 		return errOpened
 	}
 	// Parse the string address
-	addr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d",ip.String(), port)
+	addr, err := net.ResolveUDPAddr("udp4", fmt.Sprintf("%s:%d",ip.String(), port))
 	if err != nil {
 		return err
 	}
