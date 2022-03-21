@@ -194,9 +194,11 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 			c.nRepeats++
 			return nil, nil
 		} else if seqNo > seqF {
+			log.Infof("Inside else if seqNo > seqF  %d messages", len(res))
 			// cache or not for MessageCnt not 0, 0xffff
 			seqNo = c.storeCache(res, seqNo)
 			if seqNo <= seqF {
+				log.Infof("Inside if seqNo <= seqF %d messages", len(res))
 				return nil, nil
 			}
 			reqBuf := c.newReq(seqNo)
