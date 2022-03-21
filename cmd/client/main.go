@@ -140,7 +140,7 @@ func main() {
 						askPrice : coder.Uint32(msg.Data[26:30]),
 						askSize : coder.Uint32(msg.Data[30:34]),
 					}
-					log.Infof("  Message: %d \n    Contents: %+v \n ", j, cnts)
+					fmt.Printf("  Message: %d \n    Contents: %+v \n ", j, cnts)
 				}
 			}
 		}
