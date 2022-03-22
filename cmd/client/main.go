@@ -56,7 +56,7 @@ func main() {
 	flag.Parse()
 	netif := MoldUDP.NewIf(netMode)
 	log.Info("Client listen", maddr, "via", netif)
-	cc, err := MoldUDP.NewClient(maddr, port, &opt, netif)
+	cc, err := MoldUDP.NewClient(maddr, port, &opt, netif, true)
 	if err != nil {
 		log.Error("NewClient", err)
 		os.Exit(1)

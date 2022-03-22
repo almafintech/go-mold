@@ -49,6 +49,8 @@ type Client struct {
 	ch               chan msgBuf
 	ready            []Message
 	cache            msgCache
+
+	startOnFirst bool
 }
 
 type msgBuf struct {
@@ -180,6 +182,10 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 		}
 	}
 	seqNo := msgBB.seqNo
+	if c.startOnFirst {
+		c.seqNo = seqNo
+		c.startOnFirst = false
+	}
 	log.Infof("Before msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
 	if msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff {
 		log.Infof("Inside msgCnt := msgBB.msgCnt; msgCnt != 0 && msgCnt != 0xffff %d messages", len(res))
@@ -325,11 +331,14 @@ func (c *Client) DumpStats() {
 		c.nMissed, c.nRequest, c.nRepeats, c.cache.maxPageNo, c.nMerges)
 }
 
-func NewClient(udpAddr string, port int, opt *Option, conn McastConn) (*Client, error) {
+func NewClient(udpAddr string, port int, opt *Option, conn McastConn, startOnFirst bool) (*Client, error) {
 	var err error
 	client := Client{conn: conn, seqNo: opt.NextSeq}
 	if client.seqNo == 0 {
 		client.seqNo++
+	}
+	if startOnFirst {
+		client.startOnFirst = true
 	}
 	client.dstIP = net.ParseIP(udpAddr)
 	client.dstPort = port
