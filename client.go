@@ -182,7 +182,7 @@ func (c *Client) doMsgBuf(msgBB *msgBuf) ([]byte, error) {
 		}
 	}
 	seqNo := msgBB.seqNo
-	log.Infof("Before if c.startOnFirst msgBB: %+v, c: %+v", msgBB, c)
+	log.Infof("Before if c.startOnFirst msgBB: %+v, c.seqNo: %d, seqEnd: %d, seqMax: %d", msgBB, c.seqNo, c.seqEnd, c.seqMax)
 	if c.startOnFirst {
 		c.seqNo = seqNo
 		c.startOnFirst = false
